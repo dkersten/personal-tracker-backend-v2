@@ -1,7 +1,15 @@
-const express = require('express')
+import 'dotenv/config.js'
+import cors from 'cors'
+import express from 'express'
 
 const app = express()
 
-app.listen(3000, () => {
-    console.log('Example app listening on port 3000!')
+app.use(cors())
+
+app.get('/', (req, res) => {
+    res.send('Hello tool')
 })
+
+app.listen(process.env.PORT, () => {
+    console.log(`Example app listening on port ${process.env.PORT}!`)
+})//
