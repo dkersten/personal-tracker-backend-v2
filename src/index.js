@@ -10,6 +10,12 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true}))
 app.use(cors())
 
+// custom middleware
+app.use((req, res, next) => {
+    req.me = users[1]
+    next()
+});
+
 let users = {
     1: {
         id: '1',
@@ -46,12 +52,12 @@ app.get('/users/:userId', (req, res) => {
 })
 
 app.get('/activities', (req, res) => {
-    return res.send(Object.values(activities));
-});
+    return res.send(Object.values(activities))
+})
    
 app.get('/activities/:activityId', (req, res) => {
-    return res.send(activities[req.params.activityId]);
-});
+    return res.send(activities[req.params.activityId])
+})
 
 app.delete('/activities/:activityId', (req, res) => {
     return res.send(`Activity ${req.params.activityId} deleted`)
@@ -65,7 +71,7 @@ app.post('/activities', (req, res) => {
         type: req.body.type,
         date: req.body.date,
         description: req.body.description,
-        userId: req.body.userId
+        userId: req.me.id
     }
     activities[id] = activity
 
