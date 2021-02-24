@@ -4,6 +4,8 @@ import express from 'express'
 import { v4 as uuidv4 } from 'uuid'
 import urlencoded from 'body-parser'
 
+import models from './models/index.js'
+
 const app = express()
 
 app.use(express.json())
@@ -12,51 +14,28 @@ app.use(cors())
 
 // custom middleware
 app.use((req, res, next) => {
-    req.me = users[1]
+    req.context = {
+        models,
+        me: req.me = users[1],
+    }
     next()
 });
 
-let users = {
-    1: {
-        id: '1',
-        name: 'Dan'
-    }
-}
-
-let activities = {
-    1: {
-        id: '1',
-        name: 'Cardio',
-        type: 'Exercise',
-        date: 'Feb. 21, 2021',
-        description: 'Went for a 1.5 mile run',
-        userId: '1'
-    },
-    2: {
-        id: '2',
-        name: 'Job Application',
-        type: 'Career',
-        date: 'Feb 21, 2021',
-        description: 'Applied for a front end developer position',
-        userId: '1'
-    }
-}
-
 // routes
 app.get('/users', (req, res) => {
-    return res.send(Object.values(users))
+    return res.send(Object.values(req.context.models.users))
 })
 
 app.get('/users/:userId', (req, res) => {
-    return res.send(users[req.params.userId])
+    return res.send(req.context.models.users[req.params.userId])
 })
 
 app.get('/activities', (req, res) => {
-    return res.send(Object.values(activities))
+    return res.send(Object.values(req.context.models.activities))
 })
    
 app.get('/activities/:activityId', (req, res) => {
-    return res.send(activities[req.params.activityId])
+    return res.send(req.context.models.activities[req.params.activityId])
 })
 
 app.delete('/activities/:activityId', (req, res) => {
@@ -71,9 +50,9 @@ app.post('/activities', (req, res) => {
         type: req.body.type,
         date: req.body.date,
         description: req.body.description,
-        userId: req.me.id
+        userId: req.context.me.id
     }
-    activities[id] = activity
+    req.context.models.activities[id] = activity
 
     return res.send(activity)
 })
