@@ -4,7 +4,7 @@ import express from 'express'
 import { v4 as uuidv4 } from 'uuid'
 import urlencoded from 'body-parser'
 
-import models from './models/index.js'
+import models, { connectDb } from './models/index.js'
 import routes from './routes/index.js'
 
 const app = express()
@@ -25,6 +25,8 @@ app.use((req, res, next) => {
     next()
 });
 
-app.listen(process.env.PORT, () => {
-    console.log(`Example app listening on port ${process.env.PORT}!`)
-})//
+connectDb().then(async () => {
+    app.listen(process.env.PORT, () =>
+        console.log(`Example app listening on port ${process.env.PORT}!`),
+    )
+})
