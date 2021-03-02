@@ -1,13 +1,13 @@
 import mongoose from 'mongoose'
 
-import User from './user.js'
-import Activity from './activity.js'
+import user from './user.js'
+import activity from './activity.js'
 
 const connectDb = () => {
     return mongoose.connect(process.env.DATABASE_URL)
 }
 
-const models = { User, Activity }
+const models = { user, activity }
 
 export { connectDb }
 
